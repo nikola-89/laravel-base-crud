@@ -10,9 +10,9 @@ class Serie extends Model
 		'content_id',
 		'distributor',
 		'title',
-		'type',
 		'synopsis',
 		'year',
-		'season'
+		'season',
+		'updated_at'
 	];
 }

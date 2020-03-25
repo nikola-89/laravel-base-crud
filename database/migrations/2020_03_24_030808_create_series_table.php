@@ -15,11 +15,10 @@ class CreateSeriesTable extends Migration
 	{
 		Schema::create('series', function (Blueprint $table) {
 			$table->id();
-			$table->integer('content_id')->unique();
+			$table->char('content_id')->unique();
 			$table->string('distributor', 30);
 			$table->string('title', 100)->charset('utf8');
-			$table->string('type', 20);
-			$table->text('synopsis')->charset('utf8');
+			$table->text('synopsis')->charset('utf8')->nullable();
 			$table->year('year');
 			$table->tinyInteger('season');
 			$table->timestamps();

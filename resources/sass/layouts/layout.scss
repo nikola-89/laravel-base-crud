@@ -1,0 +1,35 @@
+// ***************************************
+body {
+	min-width: 500px;
+	background-color: rgb(78, 83, 88);
+}
+
+header {
+	.container-fluid {
+		padding: 0;
+		.navbar {
+			.nav-title {
+				text-transform: uppercase;
+				font-weight: 600;
+				color: #fff;
+			}
+		}
+	}
+}
+
+main {
+	margin-top: 50px;
+}
+
+label {
+	text-transform: uppercase;
+	color: #fff;
+}
+
+input {
+	width: 100%;
+}
+
+input[type=number] {
+	width: 70px;
+}

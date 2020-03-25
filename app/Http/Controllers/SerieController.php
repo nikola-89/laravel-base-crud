@@ -7,6 +7,14 @@ use App\Serie;
 
 class SerieController extends Controller
 {
+	private $validationData = [
+		'content_id' => 'required|string|max:255',
+		'distributor' => 'required|string|max:30',
+		'title' => 'required|string|max:100',
+		'synopsis' => 'string|max:2000',
+		'year' => 'required|numeric|min:1900|max:2099',
+		'season' => 'required|numeric|min:1|max:99',
+	];
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -14,8 +22,8 @@ class SerieController extends Controller
 	 */
 	public function index()
 	{
-		$show = Serie::all();
-		dd($show);
+		$series = Serie::all();
+		return view('series.index', compact('series'));
 	}
 
 	/**
@@ -37,20 +45,16 @@ class SerieController extends Controller
 	public function store(Request $request)
 	{
 		$data = $request->all();
-		$show = new Serie;
-		$show->content_id = $data['content_id'];
-		$show->distributor = $data['distributor'];
-		$show->title = $data['title'];
-		$show->type = $data['type'];
-		$show->synopsis = $data['synopsis'];
-		$show->year = $data['year'];
-		$show->season = $data['season'];
-		$save = $show->save();
+		$request->validate($this->validationData);
+		$serieToAdd = new Serie;
+		$serieToAdd->fill($data);
+		$save = $serieToAdd->save();
 		if ($save) {
-			return redirect()->route('series.index');
-		} else {
-			return back()->withInput();
-		}
+			$serie = Serie::all()->last();
+			return redirect()->route('series.show', compact('serie'));
+		} 
+		return back()->withInput();
+		
 	}
 
 	/**
@@ -59,9 +63,12 @@ class SerieController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show($id)
+	public function show(Serie $serie)
 	{
-		//
+		if (empty($serie)) {
+			abort('404');
+		}
+		return view('series.show', compact('serie'));
 	}
 
 	/**
@@ -70,9 +77,12 @@ class SerieController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function edit($id)
+	public function edit(Serie $serie)
 	{
-		//
+		if (empty($serie)) {
+			abort('404');
+		}
+		return view('series.create', compact('serie'));
 	}
 
 	/**
@@ -84,7 +94,18 @@ class SerieController extends Controller
 	 */
 	public function update(Request $request, $id)
 	{
-		//
+		$serie = Serie::find($id);
+		if (empty($serie)) {
+			abort('404');
+		}
+		$data = $request->all();
+		$request->validate($this->validationData);
+		$updated = $serie->update($data);
+		if ($updated) {
+			$serie = Serie::find($id);
+			return redirect()->route('series.show', compact('serie'));
+		}
+		abort('404');
 	}
 
 	/**
@@ -93,8 +114,14 @@ class SerieController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy($id)
+	public function destroy(Serie $serie)
 	{
-		//
+		$id = $serie->id;
+		$serie->delete();
+		$data = [
+			'id' => $id,
+			'series' => Serie::all(),
+		];
+		return view('series.index', $data);
 	}
 }

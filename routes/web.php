@@ -14,3 +14,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::resource('series', 'SerieController');
+
+Route::get('/', 'SerieController@index')->name('series.index');
